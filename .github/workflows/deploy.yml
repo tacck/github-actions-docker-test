@@ -43,5 +43,8 @@ jobs:
     steps:
       - name: exec command in docker image
         run: |
-          ls
-          ls /
+          echo '# check docker'
+          echo '## ls -aF /'
+          ls -aF /
+          echo '## cat /etc/os-release '
+          cat /etc/os-release
