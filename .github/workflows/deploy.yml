@@ -19,7 +19,7 @@ jobs:
           GITHUB_SHA: ${{ github.sha }}
       - name: Build and push Docker image
         run: |
-          docker build -t $GITHUB_REPOSITORY:$GITHUB_SHA .
+          docker build -t $GITHUB_REPOSITORY:$GITHUB_SHA ./docker/Dockerfile
           docker login ghcr.io --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
           docker push $GITHUB_REPOSITORY:$GITHUB_SHA
         env:
