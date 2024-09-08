@@ -1,0 +1,21 @@
+name: Docker Test
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build and push Docker image
+        run: |
+          docker build -t $GITHUB_REPOSITORY:$GITHUB_SHA .
+          docker login ghcr.io --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
+          docker push $GITHUB_REPOSITORY:$GITHUB_SHA
+        env:
+          GITHUB_REPOSITORY: ${{ github.action_repository }}
+          GITHUB_SHA: ${{ github.sha }}
+          DOCKER_USERNAME: tacck
+          DOCKER_PASSWORD: ${{ secrets.GHCR_TOKEN }}
