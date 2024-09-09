@@ -1,12 +1,6 @@
 services:
   actions-test-image:
     image: ghcr.io/tacck/github-actions-docker-test:latest
-    healthcheck:
-      test: ["CMD", "ls"]
-      interval: 5s
-      timeout: 30s
-      retries: 5
-      start_period: 5s
   
   # db:
   #   image: postgres:15.2
