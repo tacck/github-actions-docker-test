@@ -75,6 +75,8 @@ jobs:
           docker ps -a
           echo "# docker images"
           docker images
+          echo "# docker compose -f docker/compose/compose.yml ps"
+          docker compose -f docker/compose/compose.yml ps
       - name: exec command in docker image
         run: |
           echo '# check docker'
