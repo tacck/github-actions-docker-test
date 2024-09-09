@@ -67,6 +67,14 @@ jobs:
       - name: docker compose up -d
         run: |
           docker compose -f docker/compose/compose.yml up -d
+      - name: docker up check
+        run: |
+          echo "# docker ps"
+          docker ps
+          echo "# docker ps -a"
+          docker ps -a
+          echo "# docker images"
+          docker images
       - name: exec command in docker image
         run: |
           echo '# check docker'
