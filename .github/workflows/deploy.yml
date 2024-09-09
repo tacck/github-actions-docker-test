@@ -71,6 +71,6 @@ jobs:
         run: |
           echo '# check docker'
           echo '## ls -aF /'
-          docker compose -f docker/compose/compose.yml eec base ls -aF /
+          docker compose -f docker/compose/compose.yml exec base ls -aF /
           echo '## cat /etc/os-release '
-          docker compose -f docker/compose/compose.yml eec base cat /etc/os-release
+          docker compose -f docker/compose/compose.yml exec base cat /etc/os-release
