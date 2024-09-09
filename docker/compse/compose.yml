@@ -1,0 +1,6 @@
+services:
+  base:
+    image: ghcr.io/tacck/github-actions-docker-test:latest
+  
+  db:
+    image: postgres:15.2
