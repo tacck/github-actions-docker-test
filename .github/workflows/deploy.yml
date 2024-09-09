@@ -61,7 +61,7 @@ jobs:
           password: ${{ secrets.GHCR_TOKEN }}
       - name: docker compose up -d
         run: |
-          docker-compose -f docker/compose/compose.yml up -d
+          docker compose -f docker/compose/compose.yml up -d
       - name: exec command in docker image
         run: |
           echo '# check docker'
