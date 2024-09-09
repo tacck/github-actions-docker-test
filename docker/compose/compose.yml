@@ -1,5 +1,5 @@
 services:
-  base:
+  actions-test-image:
     image: ghcr.io/tacck/github-actions-docker-test:latest
   
   # db:
