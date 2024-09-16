@@ -1,0 +1,86 @@
+name: Docker Test
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: check
+        run: |
+          ls .
+          echo GITHUB_REPOSITORY: $GITHUB_REPOSITORY
+          echo GITHUB_SHA: $GITHUB_SHA
+        env:
+          GITHUB_REPOSITORY: ${{ github.action_repository }}
+          GITHUB_SHA: ${{ github.sha }}
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_TOKEN }}
+      - name: Build and push Docker image
+        run: |
+          docker build -t ghcr.io/$GITHUB_REPOSITORY:$GITHUB_SHA -t ghcr.io/$GITHUB_REPOSITORY:latest ./docker/build
+          docker push ghcr.io/$GITHUB_REPOSITORY:$GITHUB_SHA
+          docker push ghcr.io/$GITHUB_REPOSITORY:latest
+        env:
+          GITHUB_REPOSITORY: ${{ github.action_repository }}
+          GITHUB_SHA: ${{ github.sha }}
+  exec:
+    runs-on: ubuntu-latest
+    needs:
+      - build
+    container:
+      image: ghcr.io/tacck/github-actions-docker-test:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GHCR_TOKEN }}
+    steps:
+      - name: exec command in docker image
+        run: |
+          echo '# check docker'
+          echo '## ls -aF /'
+          ls -aF /
+          echo '## cat /etc/os-release '
+          cat /etc/os-release
+  exec-compose:
+    runs-on: ubuntu-latest
+    needs:
+      - build
+    steps:
+      - uses: actions/checkout@v4
+      - name: check path
+        run: |
+          ls -aF .
+        shell: bash
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_TOKEN }}
+      - name: docker compose up -d
+        run: |
+          docker compose -f docker/compose/compose.yml up -d
+      - name: docker up check
+        run: |
+          echo "# docker ps"
+          docker ps
+          echo "# docker ps -a"
+          docker ps -a
+          echo "# docker images"
+          docker images
+          echo "# docker compose -f docker/compose/compose.yml ps"
+          docker compose -f docker/compose/compose.yml ps
+      - name: exec command in docker image
+        run: |
+          echo '# check docker'
+          echo '## ls -aF /'
+          docker compose -f docker/compose/compose.yml exec actions-test-image ls -aF /
+          echo '## cat /etc/os-release '
+          docker compose -f docker/compose/compose.yml exec actions-test-image cat /etc/os-release
